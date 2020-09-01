@@ -39,6 +39,11 @@ sudo raspi-config nonint do_i2c 0
 sudo reboot
 ```
 
+Detect if the HAT is found on the #1 I2C port with
+```bash
+sudo i2cdetect -y 1
+```
+
 Copy and paste the following in to a terminal. It will install all the required files, enable, and start the service.  If you are running Raspbian or Ubuntu, you can use the following installation command:
 
 ```bash
