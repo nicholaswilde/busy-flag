@@ -34,6 +34,11 @@ In order to install this on your Raspberry Pi, you can follow the next steps:
 
 [Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
 
+```bash
+sudo raspi-config nonint do_i2c 0
+sudo reboot
+```
+
 Copy and paste the following in to a terminal. It will install all the required files, enable, and start the service.  If you are running Raspbian or Ubuntu, you can use the following installation command:
 
 ```bash
