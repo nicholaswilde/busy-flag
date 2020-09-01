@@ -1,4 +1,4 @@
-# Simple server for Raspberry Pi with Pimoroni Unicorn hat
+# Simple server for Raspberry Pi with a Servo Motor
 
 * [Introduction](#Introduction)
 * [Installation](#Installation)
