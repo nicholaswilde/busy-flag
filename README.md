@@ -1,4 +1,5 @@
-# Simple server for Raspberry Pi with a Servo Motor
+# Busy Flag
+Simple busy flag server for Raspberry Pi Zero and Adafruit 16-Channel PWM / Servo Bonnet
 
 * [Introduction](#Introduction)
 * [Installation](#Installation)
