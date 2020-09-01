@@ -1,5 +1,5 @@
 [Unit]
-Description=BusyLight
+Description=BusyFlag
 After=network.target
 
 [Service]
