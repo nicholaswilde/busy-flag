@@ -18,7 +18,7 @@ Simple busy flag server for Raspberry Pi Zero and Adafruit 16-Channel PWM / Serv
 
 # Introduction
 
-This is a project to create a busy light from both the Pimoroni [Unicorn Phat](https://shop.pimoroni.com/products/unicorn-phat) and [Unicorn Mini](https://shop.pimoroni.com/products/unicorn-hat-mini).
+This is a project to create a busy flag from the [Adafruit 16-Channel PWM / Servo Bonnet for Raspberry Pi](https://www.adafruit.com/product/3416) and [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
 
 The service itself has the following features:
 
@@ -31,6 +31,8 @@ The service itself has the following features:
 # Installation
 
 In order to install this on your Raspberry Pi, you can follow the next steps:
+
+[Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
 
 Copy and paste the following in to a terminal. It will install all the required files, enable, and start the service.  If you are running Raspbian or Ubuntu, you can use the following installation command:
 
