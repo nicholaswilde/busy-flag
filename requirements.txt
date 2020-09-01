@@ -3,4 +3,3 @@ flask_cors
 gpiozero
 jsmin
 adafruit-circuitpython-servokit
-Adafruit 16-Channel PWM / Servo Bonnet for Raspberry Pi
