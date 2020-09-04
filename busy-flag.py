@@ -30,9 +30,16 @@ ANGLE_DOWN = 120
 HOST = '0.0.0.0'
 DEBUG = True
 
+# The overall PWM frequency of the PCA9685 in Hertz. Default frequency is ``50``.
+FREQUENCY = 50
+
+# The I2C address of the PCA9685. Default address is ``0x40``.
+# Can be found by running sudo i2cdetect -y 1
+ADDRESS=0x40
+
 
 # Initialize the servo kit
-kit = ServoKit(channels=CHANNELS)
+kit = ServoKit(channels=CHANNELS, frequency=FREQUENCY, address=ADDRESS)
 
 
 class MyFlaskApp(Flask):
