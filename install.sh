@@ -1,4 +1,5 @@
 #!sudo /bin/bash
+
 SCRIPT=`realpath -s $0`
 SCRIPTPATH=`dirname $SCRIPT`
 STARTPWD=$PWD
@@ -25,24 +26,24 @@ usage() {
 }
 
 version() {
-    echo -e "${BOLD}Unicorn Busy Server installation script 0.5${NORMAL}"
+    echo -e "${BOLD}Busy Flag installation script 0.5${NORMAL}"
     echo -e "(c) Jamie Maynard 2020"
 }
 
 installSystemdService() {
     show_msg "${GREEN}Installing Systemd Service...${NORMAL}"
-    sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" $INSTALL_DIR/busylight.service
-    if [[ ! -f /etc/systemd/system/busylight.service ]]; then
-        sudo cp busylight.service /etc/systemd/system/busylight.service
+    sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" $INSTALL_DIR/busy-flag.service
+    if [[ ! -f /etc/systemd/system/busy-flag.service ]]; then
+        sudo cp busylight.service /etc/systemd/system/busy-flag.service
     else
-        sudo sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" /etc/systemd/system/busylight.service
+        sudo sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" /etc/systemd/system/busy-flag.service
     fi
 }
 
 enableSystemdService() {
     show_msg "${GREEN}Starting Systemd Service...${NORMAL}"
-    sudo systemctl enable busylight.service
-    sudo systemctl start busylight.service
+    sudo systemctl enable busy-flag.service
+    sudo systemctl start busy-flag.service
 }
 
 VERBOSE=false
@@ -77,7 +78,7 @@ if [ $VERBOSE == "false" ]; then
 fi
 
 # Check if we have the required files or if we need to clone them
-FILES=("server.py" "requirements.txt" "start.sh" "busylight.service" "lib/__init__.py" "lib/unicorn_wrapper.py")
+FILES=("server.py" "requirements.txt" "start.sh" "busy-flag.service" "lib/__init__.py" "lib/unicorn_wrapper.py")
 FILECHECK=true
 for FILE in ${FILES[@]}; do
     if [ $INSTALL_DIR != $SCRIPTPATH ]; then
@@ -108,10 +109,10 @@ if [ $FILECHECK == 'false' ]; then
         exit 1
     fi
     if [ "$(ls -A ${INSTALL_DIR})" ]; then
-        INSTALL_DIR="$INSTALL_DIR/unicorn-busy-server"
+        INSTALL_DIR="$INSTALL_DIR/busy-flag"
     fi
     show_msg "${GREEN}Cloning files from git using HTTPS to ${BOLD}${INSTALL_DIR}${NORMAL}${GREEN}...${NORMAL}"
-    git clone -q https://github.com/estruyf/unicorn-busy-server.git $INSTALL_DIR
+    git clone -q https://github.com/nicholaswilde/busy-flag.git $INSTALL_DIR
     chown -R $SUDO_USER:$SUDO_USER $INSTALL_DIR
     cd $INSTALL_DIR
 fi
