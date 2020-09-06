@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
 import json
+import board
+import busio
 
 from time 				import sleep
 from datetime 			import datetime
 from gpiozero 			import CPUTemperature
 from flask 				import Flask, jsonify, make_response, request, send_from_directory
 from flask_cors 		import CORS
-from jsmin 				import jsmin
-from adafruit_servokit 	import ServoKit
-
+from jsmin				import jsmin
+from adafruit_servokit	import ServoKit
+from adafruit_pca9685	import PCA9685
 
 globalRed = 0
 globalGreen = 0
@@ -20,26 +22,45 @@ globalLastCalledApi = None
 globalStatus = None
 globalStatusOverwrite = False
 
-
 # Set channels to the number of servo channels on your kit.
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
 CHANNELS = 16
-CHANNEL = 0			# Channel of servo
-ANGLE_UP = 5
-ANGLE_DOWN = 120
+CHANNEL_SERVO = 0	# Channel of servo
+CHANNEL_LED = 1		# Channel of LED
+ANGLE_UP = 0
+ANGLE_DOWN = 115
 HOST = '0.0.0.0'
 DEBUG = True
+DUTY_CYCLE_ON = 0xffff
+DUTY_CYCLE_OFF = 0
 
 # The overall PWM frequency of the PCA9685 in Hertz. Default frequency is ``50``.
 FREQUENCY = 50
 
 # The I2C address of the PCA9685. Default address is ``0x40``.
 # Can be found by running sudo i2cdetect -y 1
-ADDRESS=0x40
+ADDRESS_SERVO=0x40
 
 
-# Initialize the servo kit
-kit = ServoKit(channels=CHANNELS, frequency=FREQUENCY, address=ADDRESS)
+# LED
+hat = PCA9685(busio.I2C(board.SCL, board.SDA))
+led = hat.channels[CHANNEL_LED]
+
+class Servo(ServoKit):
+	def __init__(self, channels, frequency, address, channel, angle_up=0, angle_down=120):
+		super().__init__(channels=channels, frequency=frequency, address=address)
+		self.channel = channel
+		self.angle_up = angle_up
+		self.angle_down = angle_down
+
+	def up(self):
+		self.servo[self.channel].angle = self.angle_up
+
+	def down(self):
+		self.servo[self.channel].angle = self.angle_down
+		
+	def home(self):
+		self.servo[self.channel].angle = self.angle_down
 
 
 class MyFlaskApp(Flask):
@@ -47,13 +68,23 @@ class MyFlaskApp(Flask):
 		super(MyFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
 
+s = Servo(channels=CHANNELS, frequency=FREQUENCY, address=ADDRESS_SERVO, channel=CHANNEL_SERVO, angle_up=ANGLE_UP, angle_down=ANGLE_DOWN)
 app = MyFlaskApp(__name__, static_folder='frontend/build', static_url_path='/')
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
+def led_on():
+	led.duty_cycle = DUTY_CYCLE_ON
+
+
+def led_off():
+	led.duty_cycle = DUTY_CYCLE_OFF
+
+
 def up():
 	print("up")
-	kit.servo[CHANNEL].angle = ANGLE_UP
+	s.up()
+	led_on()
 	sleep(1)
 
 
@@ -63,9 +94,10 @@ def down():
 
 def home():
 	print("home")
-	kit.servo[CHANNEL].angle = ANGLE_DOWN
+	s.down()
+	led_off()
 	sleep(1)
-	
+
 
 def setTimestamp():
 	global globalLastCalled
