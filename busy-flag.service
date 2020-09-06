@@ -1,11 +1,11 @@
 [Unit]
-Description=BusyFlag
+Description=Busy Flag
 After=network.target
 
 [Service]
-User=root
-WorkingDirectory=/home/pi/unicorn-busy-server
-ExecStart=python3 server.py
+User=pi
+WorkingDirectory=/home/pi/git/busy-flag
+ExecStart=python3 busy-flag.py
 Restart=always
 Environment=FLASK_CONFIG=production
 
