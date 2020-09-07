@@ -26,7 +26,7 @@ globalStatusOverwrite = False
 # 8 for FeatherWing, 16 for Shield/HAT/Bonnet.
 CHANNELS = 16
 CHANNEL_SERVO = 0	# Channel of servo
-CHANNEL_LED = 1		# Channel of LED
+CHANNEL_LED = 3		# Channel of LED
 ANGLE_UP = 0
 ANGLE_DOWN = 115
 HOST = '0.0.0.0'

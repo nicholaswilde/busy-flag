@@ -78,7 +78,7 @@ if [ $VERBOSE == "false" ]; then
 fi
 
 # Check if we have the required files or if we need to clone them
-FILES=("server.py" "requirements.txt" "start.sh" "busy-flag.service" "lib/__init__.py" "lib/unicorn_wrapper.py")
+FILES=("busy-flag.py" "requirements.txt" "busy-flag.service")
 FILECHECK=true
 for FILE in ${FILES[@]}; do
     if [ $INSTALL_DIR != $SCRIPTPATH ]; then

@@ -295,6 +295,11 @@ Resets the status override state so that the [`/api/switch`](#rgb) endpoint will
 
 Returns `200 OK` and an Empty JSON Object `{}`
 
+### Docker
+```bash
+$ sudo docker build -t busy-flag:latest .
+$ sudo docker run -p 5000:5000 --rm --cap-add SYS_RAWIO --device /dev/i2c-1 busy-flag:latest
+```
 
 # Todo
 
