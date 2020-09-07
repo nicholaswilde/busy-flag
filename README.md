@@ -13,6 +13,7 @@ Simple busy flag server for Raspberry Pi Zero and Adafruit 16-Channel PWM / Serv
     * [Set unicorn to busy](#busy)
     * [Set unicorn to away](#away)
     * [Reset the overwritten status](#reset)
+* [Docker](#Docker)
 * [Todo](#Todo)
 * [License](#License)
 
@@ -35,28 +36,28 @@ In order to install this on your Raspberry Pi, you can follow the next steps:
 [Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
 
 ```bash
-sudo raspi-config nonint do_i2c 0
-sudo reboot
+$ sudo raspi-config nonint do_i2c 0
+$ sudo reboot
 ```
 
 Detect if the HAT is found on the #1 I2C port with
 ```bash
-sudo i2cdetect -y 1
+$ sudo i2cdetect -y 1
 ```
 
 Copy and paste the following in to a terminal. It will install all the required files, enable, and start the service.  If you are running Raspbian or Ubuntu, you can use the following installation command:
 
 ```bash
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh | sudo bash -
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh | sudo bash -
 ```
 
 If there might be a trust issue while running the command, you could try the following:
 
 ```bash
-cd /tmp
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
-cat install | more # So you can see the contents of the script a page at time
-sudo bash ./install.sh -V -i /home/pi/unicorn-busy-server
+$ cd /tmp
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
+$ cat install | more # So you can see the contents of the script a page at time
+$ sudo bash ./install.sh -V -i /home/pi/unicorn-busy-server
 ```
 
 > **Important**: Currently the script only runs on Raspbian/Ubuntu. Feel free to submit a pull request to extend the PR to support other distributions. Or you can make use of the old installation script: `install-fallback.sh`.
@@ -64,14 +65,15 @@ sudo bash ./install.sh -V -i /home/pi/unicorn-busy-server
 If you want to clone/fork this repo and carry on development on a more sensible machine, you can install the required files without needing to install the service by doing the following:
 
 ```bash
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
-bash ./install.sh -d
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
+$ bash ./install.sh -d
 ```
 
 The scripts usage output is as follows:
 
 ```
-Unicorn Busy Server installation script 0.5
+Busy Flag installation script 0.5
+(c) Nicholas Wilde 2020
 (c) Jamie Maynard 2020
 
 Usage:
