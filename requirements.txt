@@ -1,6 +1,5 @@
-unicornhat
-unicornhatmini
 flask
 flask_cors
 gpiozero
 jsmin
+adafruit-circuitpython-servokit

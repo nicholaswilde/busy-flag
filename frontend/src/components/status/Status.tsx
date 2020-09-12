@@ -18,7 +18,7 @@ export const Status: React.FunctionComponent<IStatusProps> = (props: IStatusProp
               backgroundColor: props.rgb ? `rgb(${props.rgb.red}, ${props.rgb.green}, ${props.rgb.blue})` : 'inherit'
             }}>{props.status}</span>
           </>
-        ) : `Busy Light`}  
+        ) : `Busy Flag`}  
       </h2>
     </>
 	);

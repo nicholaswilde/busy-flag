@@ -1,4 +1,5 @@
-# Simple server for Raspberry Pi with Pimoroni Unicorn hat
+# Busy Flag
+Simple busy flag server for Raspberry Pi Zero and Adafruit 16-Channel PWM / Servo Bonnet
 
 * [Introduction](#Introduction)
 * [Installation](#Installation)
@@ -12,12 +13,13 @@
     * [Set unicorn to busy](#busy)
     * [Set unicorn to away](#away)
     * [Reset the overwritten status](#reset)
+* [Docker](#Docker)
 * [Todo](#Todo)
 * [License](#License)
 
 # Introduction
 
-This is a project to create a busy light from both the Pimoroni [Unicorn Phat](https://shop.pimoroni.com/products/unicorn-phat) and [Unicorn Mini](https://shop.pimoroni.com/products/unicorn-hat-mini).
+This is a project to create a busy flag from the [Adafruit 16-Channel PWM / Servo Bonnet for Raspberry Pi](https://www.adafruit.com/product/3416) and [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
 
 The service itself has the following features:
 
@@ -31,34 +33,47 @@ The service itself has the following features:
 
 In order to install this on your Raspberry Pi, you can follow the next steps:
 
+[Enable I2C](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
+
+```bash
+$ sudo raspi-config nonint do_i2c 0
+$ sudo reboot
+```
+
+Detect if the HAT is found on the #1 I2C port with
+```bash
+$ sudo i2cdetect -y 1
+```
+
 Copy and paste the following in to a terminal. It will install all the required files, enable, and start the service.  If you are running Raspbian or Ubuntu, you can use the following installation command:
 
 ```bash
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh | sudo bash -
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh | sudo bash -
 ```
 
 If there might be a trust issue while running the command, you could try the following:
 
 ```bash
-cd /tmp
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
-cat install | more # So you can see the contents of the script a page at time
-sudo bash ./install.sh -V -i /home/pi/unicorn-busy-server
+$ cd /tmp
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
+$ cat install | more # So you can see the contents of the script a page at time
+$ sudo bash ./install.sh -V -i /home/pi/unicorn-busy-server
 ```
 
-Currently the script only runs on Raspbian/Ubuntu I am accepting pull requests to extend the PR to support other distributions.
+> **Important**: Currently the script only runs on Raspbian/Ubuntu. Feel free to submit a pull request to extend the PR to support other distributions. Or you can make use of the old installation script: `install-fallback.sh`.
 
 If you want to clone/fork this repo and carry on development on a more sensible machine, you can install the required files without needing to install the service by doing the following:
 
 ```bash
-curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
-bash ./install.sh -d
+$ curl -LSs https://raw.githubusercontent.com/estruyf/unicorn-busy-server/master/install.sh
+$ bash ./install.sh -d
 ```
 
 The scripts usage output is as follows:
 
 ```
-Unicorn Busy Server installation script 0.5
+Busy Flag installation script 0.5
+(c) Nicholas Wilde 2020
 (c) Jamie Maynard 2020
 
 Usage:
@@ -78,7 +93,7 @@ The front-end is available via `http://<your-ip>:5000/`.
 
 ![Front-end](./assets/frontend.png)
 
-The API is fairly simple though has been extend quite a bit from its oriignal implementation.  The Busy server has the following API endpoing:
+The API is fairly simple though has been extend quite a bit from its orignal implementation.  The Busy server has the following API endpoing:
 
 | Method                                                    | Endpoint                     | Description                                                          |
 |:---------------------------------------------------------:|------------------------------|----------------------------------------------------------------------|
@@ -87,10 +102,10 @@ The API is fairly simple though has been extend quite a bit from its oriignal im
 | [<span style="color: blue">**GET**</span>](#status)       | [`/api/status`](#status)     | Get the status of the Unicorn Hat/Pi                                 |
 | [<span style="color: green">**POST**</span>](#rainbow)    | [`/api/rainbow`](#rainbow)   | Set the unicorn to cycle through all 360 hues in the HSV spectrum    |
 | [<span style="color: green">**POST**</span>](#rgb)        | [`/api/switch`](#rgb)        | Set the unicorn to a specific colour using RGB Integer values        |
-| [<span style="color: green">**POST**</span>](#available)  | [`/api/available`](#available)  | Set the unicorn to the `available` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
-| [<span style="color: green">**POST**</span>](#busy)       | [`/api/busy`](#busy)       | Set the unicorn to the `busy` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
-| [<span style="color: green">**POST**</span>](#away)       | [`/api/away`](#away)       | Set the unicorn to the `away` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
-| [<span style="color: green">**POST**</span>](#reset)      | [`/api/reset`](#reset)      | Resets the status overwrite setting. This way, the [`/api/switch`](#rgb) can be called again. |
+| [<span style="color: blue">**GET**</span> <span style="color: green">**POST**</span>](#available)  | [`/api/available`](#available)  | Set the unicorn to the `available` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
+| [<span style="color: blue">**GET**</span> <span style="color: green">**POST**</span>](#busy)       | [`/api/busy`](#busy)       | Set the unicorn to the `busy` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
+| [<span style="color: blue">**GET**</span> <span style="color: green">**POST**</span>](#away)       | [`/api/away`](#away)       | Set the unicorn to the `away` status color. This overwrites the status. Call [`/api/switch`](#reset) to turn off.  |
+| [<span style="color: blue">**GET**</span> <span style="color: green">**POST**</span>](#reset)      | [`/api/reset`](#reset)      | Resets the status overwrite setting. This way, the [`/api/switch`](#rgb) can be called again. |
 
 ## <a id="on"></a> Set the Unicorn to On
 
@@ -227,7 +242,7 @@ Returns `200 OK` and an Empty JSON Object `{}`
 
 | Method                                      | Endpoint  |
 |:-------------------------------------------:|-----------|
-| <span style="color: blue">**POST**</span>    | `/api/available` |
+| <span style="color: blue">**GET**</span> <span style="color: blue">**POST**</span>    | `/api/available` |
 
 ### Description
 
@@ -242,7 +257,7 @@ Returns `200 OK` and an Empty JSON Object `{}`
 
 | Method                                      | Endpoint  |
 |:-------------------------------------------:|-----------|
-| <span style="color: blue">**POST**</span>    | `/api/busy` |
+| <span style="color: blue">**GET**</span> <span style="color: blue">**POST**</span>    | `/api/busy` |
 
 ### Description
 
@@ -257,7 +272,7 @@ Returns `200 OK` and an Empty JSON Object `{}`
 
 | Method                                      | Endpoint  |
 |:-------------------------------------------:|-----------|
-| <span style="color: blue">**POST**</span>    | `/api/away` |
+| <span style="color: blue">**GET**</span> <span style="color: blue">**POST**</span>    | `/api/away` |
 
 ### Description
 
@@ -272,7 +287,7 @@ Returns `200 OK` and an Empty JSON Object `{}`
 
 | Method                                      | Endpoint  |
 |:-------------------------------------------:|-----------|
-| <span style="color: blue">**POST**</span>    | `/api/reset` |
+| <span style="color: blue">**GET**</span> <span style="color: blue">**POST**</span>    | `/api/reset` |
 
 ### Description
 
@@ -282,6 +297,11 @@ Resets the status override state so that the [`/api/switch`](#rgb) endpoint will
 
 Returns `200 OK` and an Empty JSON Object `{}`
 
+### Docker
+```bash
+$ sudo docker build -t busy-flag:latest .
+$ sudo docker run -p 5000:5000 --rm --cap-add SYS_RAWIO --device /dev/i2c-1 busy-flag:latest
+```
 
 # Todo
 
