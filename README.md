@@ -297,6 +297,13 @@ Resets the status override state so that the [`/api/switch`](#rgb) endpoint will
 
 Returns `200 OK` and an Empty JSON Object `{}`
 
+### Testing
+
+Test if the busy-flag is working using curl.
+
+```bash
+$ curl -X POST http://192.168.1.29:5000/api/servo -H "Content-Type: application/json" --data '{"angle":120, "speed":0.5}'
+```
 ### Docker
 ```bash
 $ sudo docker build -t busy-flag:latest .

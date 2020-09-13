@@ -17,13 +17,22 @@ class Flag(ServoKit):
     self.flag = self.servo[channel]
 
   def up(self):
-      self._move(self.angle_up)
+      self._move(angle=self.angle_up)
       
   def down(self):
-      self._move(self.angle_down)
+      self._move(angle=self.angle_down)
 		
   def home(self):
-    self._move(self.angle_home, 1)
+    self.setAngle(angle=self.angle_home, speed=1)
+    
+  def setAngle(self, angle, speed=None):
+    if not 0.1 <= speed <= 1.0:
+      raise ValueError("Speed must be 0.1 to 1.0")
+    if angle is None:
+      return
+    if speed is None:
+      speed = this.speed
+    self._move(angle, speed)
 
   @property
   def angle(self):
@@ -42,16 +51,16 @@ class Flag(ServoKit):
     self.flag.fraction = value
   
   # Speed control
-  def _move(self, n, s=None):
-    if s is None:
-      s = self.speed
-    s = 430*s
+  def _move(self, angle, speed=None):
+    if speed is None:
+      speed = self.speed
+    speed = 430*speed
     # Which direction do we need to go
-    if n > self.flag.angle:
+    if angle > self.flag.angle:
       i = 1
     else:
       i = -1
-    t = round(1/s-1/450, 4)
-    for angle in range(int(self.flag.angle), n, i):  # 0 - 180 degrees, 5 degrees at a time.
-      self.flag.angle = angle
+    t = round(1/speed-1/450, 4)
+    for n in range(int(self.flag.angle), angle, i):  # 0 - 180 degrees, i degrees at a time.
+      self.flag.angle = n
       time.sleep(t)

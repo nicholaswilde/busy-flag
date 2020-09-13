@@ -1,8 +1,8 @@
 CHANNELS = 16
 CHANNEL_SERVO = 0	# Channel of servo
 CHANNEL_LED = 3		# Channel of LED
-ANGLE_UP = 0
-ANGLE_DOWN = 120
+ANGLE_UP = 120
+ANGLE_DOWN = 0
 HOST = '0.0.0.0'
 DEBUG = True
 DUTY_CYCLE_ON = 0xffff
